@@ -1,0 +1,345 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University/School Laboratory Report
+% LaTeX Template
+% Version 3.1 (25/3/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Linux and Unix Users Group at Virginia Tech Wiki 
+% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+
+\usepackage[version=3]{mhchem} % Package for chemical equation typesetting
+\usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
+\usepackage{graphicx} % Required for the inclusion of images
+\usepackage{natbib} % Required to change bibliography style to APA
+\usepackage{amsmath} % Required for some math elements 
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\usepackage{color}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+
+\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
+
+%\usepackage{times} % Uncomment to use the Times New Roman font
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Regularization for Deep Learning} % Title
+
+\author{Yoshua  \textsc{Bengio}} % Author name
+
+\date{\today} % Date for the report
+
+\begin{document}
+
+\maketitle % Insert the title, author and date
+
+\begin{center}
+\begin{tabular}{l r}
+Date Performed: & May, 2012 \\ % Date the experiment was performed
+Partners: & Yan Yan \\ % Partner names
+%& Mary Smith \\
+%Instructor: & Professor Smith % Instructor/supervisor
+\end{tabular}
+\end{center}
+
+% If you wish to include an abstract, uncomment the lines below
+% \begin{abstract}
+% Abstract text
+% \end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	INTRO
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+To reduce the test error, increased training error may occur. 
+Regularization methods were involved. 
+There are a great may forms of regularization available. 
+This chapter we describe regularization in more detail, focusing on regularization strategies for deep models or models that may be used as building blocks to form deep models.
+Strategies like: put extra constraints, adding restrictions on the parameter values, extra terms. 
+(These constraints and penalties are designed to express a generic preference for a simpler model class in order to promote generalization, or make an underdetermined problem determined, or ensemble methods combine multiple hypotheses that explain the training data).
+
+Regularization strategies are based on regularizing estimators. Regularization of an estimator works by trading increased bias for reduced variance
+\textbf{An effective regularizer is one that makes a profitable trade, reducing variance significantly while not overly increasing the bias}.
+Three situations where the model family being trained either:
+(1) excluded the true data generating process - corresponding to under-fitting and inducing bias, or 
+(2) matched the true data generating process, or
+(3) included the generating process but also many other possible generating processes.
+
+Most applications of deep learning algorithms are to domains where the true data generating process is almost certainly outside the model family.
+DL methods are typically applied to extremely complicated domains such as images audio sequences and text --the true generation process essentially involves simulating the entire universe.
+
+ 
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Parameter Norm Penalties}
+Regularization has been used for decades prior to the advent of deep learning.
+Linear regression and logistic regression allow simple, straight forward and effective regularization strategies.
+Many are based on limiting the capacity of models like neural networks, linear regression, or logistic regression, by adding a parameter norm penalty $\Omega(\theta)$ to the object function $J$.
+
+\begin{equation}
+\tilde{J}(\theta; X, y) = J(\theta;X, y) + \alpha\Omega(\theta)
+\end{equation}
+where $\alpha \in [0, \infty) $ is a hyperparameter that weights the relative contribution of the norm penalty term.
+$\alpha = 0$ results in no regularization, larger values correspond to more regularization.
+
+For NN, we typically choose to use a parameter norm penalty $\Omega$ that penalizes only the weights of the affine transformation at each layer and leaves the biased unregularized. The biases requires less data to fit accurately than the weights - each weight specifies how two variables interact.
+
+Need further thinking here at page 232.
+
+\subsection{$L^2$ Parameter Regularization}
+The $L^2$ parameter norm penalty commonly known as \textit{weight decay}. $L^2$ regularization is also known as ridge regression or Tikhonov regularization.
+
+
+\begin{equation}
+\tilde{J}(\omega; X, y) = 0.5\alpha \omega^t \omega + J(\omega; X, y)
+\end{equation}
+
+with gradient
+
+\begin{equation}
+\nabla{\omega}\tilde{J}(\omega; X, y) = \alpha \omega + \nabla_{\omega}J(\omega; X, y)
+\end{equation}
+ 
+ the update rule:
+
+\begin{equation}
+\omega \gets \omega - \epsilon(\alpha \omega + \nabla_{\omega}J(\omega; X, y))
+\end{equation}
+
+which equals to
+
+\begin{equation}
+\omega \gets (1 - \epsilon \alpha) \omega - \epsilon \nabla_{\omega}J(\omega; X, y)
+\end{equation}
+
+which means {\color{red}{ the addition of the weight decay term has modified the learning rule to multiplicatively shrink the weight vector by a constant factor on each step}}, just before performing the usual gradient update.
+
+For the entire course of training, further make a quadratic approximation to the objective function in the neighbourhood of the value of the weights that obtains minimal unregularized training cost, $\omega^* = argmin_\omega J(\omega)$.
+
+\begin{equation}
+\hat{J}(\theta) = J(\omega^*) + 0.5(\omega - \omega^*)^T H(\omega - \omega^*)
+\end{equation}
+ where $H$ is the Hessian matrix of $J$ with respect to $\omega $evaluated at $\omega^*$.
+ $\omega^*$ is defined to be a minimum of J, we can conclude that H is positive semidefinite.
+ The minimum of $\hat{J}$ occurs where its gradient
+ \begin{equation}
+ \nabla_\omega\hat{J}(\omega) = H(\omega - \omega^*)
+ \end{equation}
+is equal to 0.
+
+To  study the weight decay, add the weight decay gradient, use $\tilde{\omega}$ to represent the location of the minimum.
+
+\begin{equation}
+\alpha \tilde{\omega} + H(\tilde{\omega} - \omega^*) = 0
+\end{equation}
+so we get 
+\begin{equation}
+\tilde{\omega} = (H + \alpha I)^{-1}H \omega^*
+\end{equation}
+
+from which we can see, as $\alpha -> 0$, the regularized $\tilde{\omega} -> \omega^*$.
+What about $\alpha$ grows?
+
+$H$ is real and symmetric, so $H = Q \Lambda Q^T$ where $\Lambda$ is a diagonal matrix, and $Q$ is an orthonormal basis of eigenvectors. From which we obtain:
+\begin{equation}
+\tilde{\omega} = Q(\Lambda + \alpha I)^{-1} \Lambda Q^T \omega^*
+\end{equation}
+we see that the effect of weight decay is to {\color{red}{rescale $\omega^*$ along the axes defined by the eigenvectors of $H$}}.
+
+\subsection{$L^1$ Parameter Regularization}
+
+{\color{blue}{\textbf{Need to be done}.}}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Norm Penalties as Constrained Optimization}
+
+\begin{equation}
+\tilde{J}(\theta; X, y) = J(\theta;X, y) + \alpha\Omega(\theta)
+\end{equation}
+
+We can minimize a function subject to constraints by constructing a generalized Lagrange function, consisting of the original objective function plus a set of penalties. Each penalty is a product between a coefficient called a KKT multiplier, and a function representing whether the constraint is satisfied.
+
+If we want $\Omega(\theta) < k$, we construct a generalized Lagrange function:
+
+\begin{equation}
+L(\theta, \alpha; X, y) = J(\theta; X, y) + \alpha(\Omega(\theta)-k)
+\end{equation}
+
+the solution to the constrained problem is given by
+
+\begin{equation}
+\theta^* = \argmax_{\theta} \max \limits_{\alpha, \alpha \ge 0 } L(\theta, \alpha)
+\end{equation}
+
+$\alpha$ increase, whenever $\Omega(\theta) > k$;
+
+$\alpha$ decrease, whenever $\Omega(\theta) < k$.
+
+So the optimal value $\alpha^* $ will {\color{red}{encourage $\Omega(\theta)$ to shrink, but not so strongly to make $\Omega(\theta)$ less than k}}.
+
+
+% If you have more than one objective, uncomment the below:
+%\begin{description}
+%\item[First Objective] \hfill \\
+%Objective 1 text
+%\item[Second Objective] \hfill \\
+%Objective 2 text
+%\end{description}
+
+\subsection{Definitions}
+\label{definitions}
+\begin{description}
+\item[Stoichiometry]
+The relationship between the relative quantities of substances taking part in a reaction or forming a compound, typically a ratio of whole integers.
+\item[Atomic mass]
+The mass of an atom of a chemical element expressed in atomic mass units. It is approximately equivalent to the number of protons and neutrons in the atom (the mass number) or to the average number allowing for the relative abundances of different isotopes. 
+\end{description} 
+
+\begin{tabular}{ll}
+Mass of empty crucible & \SI{7.28}{\gram}\\
+Mass of crucible and magnesium before heating & \SI{8.59}{\gram}\\
+Mass of crucible and magnesium oxide after heating & \SI{9.46}{\gram}\\
+Balance used & \#4\\
+Magnesium from sample bottle & \#1
+\end{tabular}
+
+
+\begin{tabular}{ll}
+Mass of magnesium metal & = \SI{8.59}{\gram} - \SI{7.28}{\gram}\\
+& = \SI{1.31}{\gram}\\
+Mass of magnesium oxide & = \SI{9.46}{\gram} - \SI{7.28}{\gram}\\
+& = \SI{2.18}{\gram}\\
+Mass of oxygen & = \SI{2.18}{\gram} - \SI{1.31}{\gram}\\
+& = \SI{0.87}{\gram}
+\end{tabular}
+
+Because of this reaction, the required ratio is the atomic weight of magnesium: \SI{16.00}{\gram} of oxygen as experimental mass of Mg: experimental mass of oxygen or $\frac{x}{1.31}=\frac{16}{0.87}$ from which, $M_{\ce{Mg}} = 16.00 \times \frac{1.31}{0.87} = 24.1 = \SI{24}{\gram\per\mole}$ (to two significant figures).
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+\section{Regularization and Under-Constrained Problems}
+
+The atomic weight of magnesium is concluded to be \SI{24}{\gram\per\mol}, as determined by the stoichiometry of its chemical combination with oxygen. This result is in agreement with the accepted value.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.65\textwidth]{placeholder} % Include the image placeholder.png
+\caption{Figure caption.}
+\end{center}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 5
+%----------------------------------------------------------------------------------------
+
+\section{Dataset Augmentation}
+
+The accepted value (periodic table) is \SI{24.3}{\gram\per\mole} \cite{Smith:2012qr}. The percentage discrepancy between the accepted value and the result obtained here is 1.3\%. Because only a single measurement was made, it is not possible to calculate an estimated standard deviation.
+
+The most obvious source of experimental uncertainty is the limited precision of the balance. Other potential sources of experimental uncertainty are: the reaction might not be complete; if not enough time was allowed for total oxidation, less than complete oxidation of the magnesium might have, in part, reacted with nitrogen in the air (incorrect reaction); the magnesium oxide might have absorbed water from the air, and thus weigh ``too much." Because the result obtained is close to the accepted value it is possible that some of these experimental uncertainties have fortuitously cancelled one another.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 6
+%----------------------------------------------------------------------------------------
+
+\section{Noise Robustness}
+
+\begin{enumerate}
+\begin{item}
+The \emph{atomic weight of an element} is the relative weight of one of its atoms compared to C-12 with a weight of 12.0000000$\ldots$, hydrogen with a weight of 1.008, to oxygen with a weight of 16.00. Atomic weight is also the average weight of all the atoms of that element as they occur in nature.
+\end{item}
+\begin{item}
+The \emph{units of atomic weight} are two-fold, with an identical numerical value. They are g/mole of atoms (or just g/mol) or amu/atom.
+\end{item}
+\begin{item}
+\emph{Percentage discrepancy} between an accepted (literature) value and an experimental value is
+\begin{equation*}
+\frac{\mathrm{experimental\;result} - \mathrm{accepted\;result}}{\mathrm{accepted\;result}}
+\end{equation*}
+\end{item}
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 7
+%----------------------------------------------------------------------------------------
+
+\section{Semi-Supervised Learning}
+
+\begin{enumerate}
+\begin{item}
+The \emph{atomic weight of an element} is the relative weight of one of its atoms compared to C-12 with a weight of 12.0000000$\ldots$, hydrogen with a weight of 1.008, to oxygen with a weight of 16.00. Atomic weight is also the average weight of all the atoms of that element as they occur in nature.
+\end{item}
+\begin{item}
+The \emph{units of atomic weight} are two-fold, with an identical numerical value. They are g/mole of atoms (or just g/mol) or amu/atom.
+\end{item}
+\begin{item}
+\emph{Percentage discrepancy} between an accepted (literature) value and an experimental value is
+\begin{equation*}
+\frac{\mathrm{experimental\;result} - \mathrm{accepted\;result}}{\mathrm{accepted\;result}}
+\end{equation*}
+\end{item}
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 8
+%----------------------------------------------------------------------------------------
+
+\section{Multi-Task Learning}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 9
+%----------------------------------------------------------------------------------------
+
+\section{Early Stopping}
+
+\section{Parameter Tying and Parameter Sharing}
+
+
+\section{Sparse Representations}
+
+\section{Bagging and Other Ensemble Methods}
+
+\section{Dropout}
+
+\section{Adversarial Training}
+
+\section{Tangent Distance, Tangent Prop, and Manifold Tangent Classifier}
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliographystyle{apalike}
+
+\bibliography{sample}
+
+%----------------------------------------------------------------------------------------
+
+
+\end{document}
