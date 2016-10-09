@@ -1,0 +1,539 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+\usepackage{array}
+\usepackage{amsmath}
+%\defmathfamilydefault{rmdefault}
+\usefonttheme[onlymath]{serif}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\usepackage{bm}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{caption}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[ ]{Linear Models for Regression} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Yan Yan} % Your name
+\institute[SIAT] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Shenzhen Institute of Advanced Technology\\
+Chinese Academy of Sciences \\ % Your institution for the title page
+\medskip
+{yan.yan@siat.ac.cn} % Your email address
+}
+\date{September 30, 2016} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Linear Basis Function Models} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+%\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+
+\begin{frame}
+\frametitle{Linear Basis Function Models}
+
+
+ The simplest linear model for regression (often simply known as \textit{linear regression}):
+\begin{equation}
+y(\bm{x},\bm{w})=\omega_0+\omega_1x_1+\cdots+\omega_Dx_D = \sum_{j=0}^{M-1}\omega_j\phi_j(\bm{x})=\bm{\omega}^T\phi(x)
+\end{equation}
+where $\bm{\omega}=(\omega_0,...,\omega_{M-1})^T$ and $\bm{\phi}=(\phi_0,\cdots,\phi_{M-1})^T$. This kinds of models are called linear models.\\~\\
+
+ When $\phi$ has different types, which means different kinds of \textit{basis function}, we have other kinds of modes, like:
+\begin{equation}
+\phi_j(x) = exp\{-\frac{(x-\mu_j)^2}{2s^2}\}
+\end{equation}
+
+or
+\begin{equation}
+\phi_j(x) = \sigma(\frac{x-\mu_j}{s}) \quad and \quad \sigma(a) = \frac{1}{1+exp(-a)}
+\end{equation} 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Examples of basis function}
+\begin{figure}
+\includegraphics[width=12cm]{Figure1}
+\caption{Examples of basis functions.}
+\label{Figure1}
+\end{figure}
+\end{frame}
+
+\subsection{Maximum likelihood and least squares} 
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Maximum Likelihood and Least Squares I}
+The target variable $t$ is given by a deterministic function $y(\bm{x},\bm{w})$ with additive Gaussian noise so that
+\begin{equation}
+t = y(\bm{x},\bm{w})+ \epsilon
+\end{equation} where $\epsilon$ is a zero mean Gaussian random variable with precision $\beta$. \\~\\
+
+So, we can write
+\begin{equation}
+p(t|\bm{x},\bm{w},\beta) = \mathcal{N}(t|y(\bm{x},\bm{w}),\beta^{-1})
+\end{equation}
+
+Consider a data set of inputs $X$ with corresponding target value vector $\bm{t}$, make the assumption that these data points are drawn independently from the distribution. So the likelihood function is:
+
+\begin{equation}
+ln p(\bm{t}|\bm{w},\beta) = \sum_{n=1}^N ln \mathcal{N}(t_n|\bm{w}^T\bm{\phi}(\bm{x}_n),\beta^{-1})
+\end{equation}.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Maximum Likelihood and Least Squares II}
+The sum-of-squares error function is defined by:
+\begin{equation}
+E_D(\bm{w}) = \frac{1}{2}\sum_{n=1}^{N}\{t_n-\bm{w}^T\bm{\phi}(\bm{x}_n)\}^2
+\end{equation}
+
+Let the gradient of the log likelihood function equals to $0$. Solving for $w$ we obtain (which are known as the \textit{normal equations} for the least squares problem):
+\begin{equation}
+\bm{w}_{ML} = (\bm{\Phi}^T\bm{\Phi})^{-1}\bm{\Phi}^T\bm{t}
+\end{equation}\\~\\
+
+Here $\bm{\Phi}$ is an $N \times M$ matrix (the \textit{design matrix}):
+
+\[
+\begin{bmatrix}
+    \phi_0(\bm{x}_1) & \phi_1(\bm{x}_1) & \cdots& \phi_{M-1}(\bm{x}_1) \\
+    \phi_0(\bm{x}_2) & \phi_1(\bm{x}_2) & \cdots & \phi_{M-1}(\bm{x}_2) \\
+    \vdots & \vdots  & \ddots & \vdots \\
+    \phi_0(\bm{x}_N) & \phi_1(\bm{x}_N) &\cdots & \phi_{M-1}(\bm{x}_N)
+\end{bmatrix}
+\]
+
+
+\end{frame}
+
+\subsection{Geometry of least squares}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Geometry of Least Squares}
+\begin{figure}
+\includegraphics[width=5cm]{Figure2}
+\caption{Examples of basis functions.}
+\label{Figure2}
+\end{figure}
+
+In an N-dimensional space whose axes are the value of $t_1,\cdots,t_N$. The least-squares regression function is obtained by finding the orthogonal projection of the data vector $\bm{t}$ onto the subspace spanned by the basis functions.
+
+\end{frame}
+
+
+\subsection{Sequential learning} 
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Sequential Learning}
+Batch techniques, such as the maximum likelihood solution which can process large dataset in one go, if the dataset if sufficiently large, it may be worthwhile to use sequential algorithms, known as \textit{on-line} algorithm. Sequential learning is also appropriate for real-time applications.\\~\\
+
+\textit{Stochastic gradient descent} is applied. If the error function  comprises a sum over data points $E = \sum_n E_n$, the update rule:
+
+\begin{equation}
+\bm{w}^{\tau+1}=\bm{w}^{\tau}-\eta \nabla E_n
+\end{equation}\\~\\
+
+For the case of  the sum-of-squares error function, this gives:
+\begin{equation}
+\bm{w}^{\tau+1}=\bm{w}^{\tau}-\eta (t_n - \bm{w}^{(\tau)T}\phi_n)\phi_n
+\end{equation}
+
+\end{frame}
+
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Regularized Least Squares I}
+The regularization terms are added to the error functions. One of the simplest forms of regularizer is given by the sum-of-squares of the weight vector elements:
+\begin{equation}
+E_W(\bm{w} = \frac{1}{2}\bm{w}^T\bm{w})
+\end{equation}
+
+Consider the sum-of-squares error function with regularizer (quadratic regularizer):
+\begin{equation}
+ E = \frac{1}{2}\sum_{n=1}^{N}\{t_n-\bm{w}^T\bm{\phi}(\bm{x}_n)\}^2+\frac{\lambda}{2}\bm{w}^T\bm{w}
+\end{equation}
+ This choice of regularizer is known as \textit{weight decay}, because in sequential learning algorithms, it encourages weight values to decay towards zero.\\~\\
+ 
+ Solving fro $w$ as the gradient of (12) equal to zero, we obtain:
+ \begin{equation}
+ \bm{w} = (\lambda \bm{I} + \bm{\Phi}^T \bm{\Phi})^{-1} \bm{\Phi}^T\bm{t}
+ \end{equation}
+ This represents a simple extension of the least-squares solution (8).
+ 
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Regularized Least Squares II}
+
+\begin{figure}
+\includegraphics[width=12cm]{Figure3}
+\caption{Contours of the regularization term for various values of the parameter q.}
+\label{Figure3}
+\end{figure}
+
+A more general regularizer is 
+\begin{equation}
+\frac{\lambda}{2} \sum_{j=1}^M|w_j|^q
+\end{equation}
+when q=2 corresponds to the quadratic regularizer in (12).\\~\\
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Regularized Least Squares III}
+
+
+\begin{figure}
+\begin{columns}
+\column{.6\linewidth}
+\includegraphics[width=7cm]{Figure4}
+\column{.3\linewidth}
+\caption{The  error function without regularization and the constraint region for quadratic regularizer (left) and lasso regularizer (right). We can see the $w$ in lasso equals to 0 make a sparse solution.}
+\label{Figure4}
+\end{columns}
+\end{figure}
+
+
+The case of q=1 is known as the \textit{lasso} which leading to a \textit{sparse} model in which the corresponding basis functions play no role.
+Regularization allows complex models to be trained on data sets of limited size without severe over-fitting, essentially by limiting the effective model complexity. However, the problem of determining the optimal model complexity is then shifted from one of finding the regularization coefficient $\lambda$.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Multiple Outputs}
+If the target value $t$ turns to a vector $\bm{t}$ which means multiple outputs. This could be done via multiple, independent regression problems.\\~\\
+
+However, usually we use the same set of basis functions to model all components of the target value vector. Suppose we take the conditional distribution of the target vector to be an isotropic Gaussian of the form
+\begin{equation}
+p(\bm{t}|\bm{x},\bm{W},\beta)=\mathcal{N}(\bm{t}|\bm{W}\bm{\phi}(\bm{x}),\beta^{-1}\bm{I})
+\end{equation}
+
+The log likelihood function is then given by:
+\begin{equation}
+ln p(\bm{T}|\bm{X},\bm{W},\beta) = \sum_{n=1}^{N}\mathcal{N}(\bm{t}_n|\bm{W}^T \bm{\phi}(\bm{x}_n),\beta^{-1}\bm{I})
+\end{equation}
+
+and maximize this function with respect to $\bm{W}$.
+
+\end{frame}
+
+
+
+%------------------------------------------------
+\section{Bias-Variance Decomposition} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Test}
+
+
+\end{frame}
+
+
+%------------------------------------------------
+\section{Bayesian Linear Regression} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+
+\subsection{Parameter distribution}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Parameter Distribution}
+
+
+\end{frame}
+
+\subsection{Predictive distribution}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Predictive Distribution}
+
+\end{frame}
+%------------------------------------------------
+
+
+\subsection{Equivalent kernal}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Equivalent Kernal}
+
+\end{frame}
+%------------------------------------------------
+
+
+\section{Bayesian Model Comparison}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Bayesian Model Comparison}
+
+\end{frame}
+%------------------------------------------------
+
+
+
+\section{Evidence Approximation}
+
+\subsection{Evaluation of Approximation Function}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Evaluation of Approximation Function}
+
+\end{frame}
+%------------------------------------------------
+
+\subsection{Maximizeing the evidence function}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Maximizeing the Evidence Function}
+
+\end{frame}
+%------------------------------------------------
+
+
+\begin{frame}
+\frametitle{Bullet Points}
+\begin{itemize}
+\item Lorem ipsum dolor sit amet, consectetur adipiscing elit
+\item Aliquam blandit faucibus nisi, sit amet dapibus enim tempus eu
+\item Nulla commodo, erat quis gravida posuere, elit lacus lobortis est, quis porttitor odio mauris at libero
+\item Nam cursus est eget velit posuere pellentesque
+\item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
+\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Blocks of Highlighted Text}
+\begin{block}{Block 1}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+\end{block}
+
+\begin{block}{Block 2}
+Pellentesque sed tellus purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum quis magna at risus dictum tempor eu vitae velit.
+\end{block}
+
+\begin{block}{Block 3}
+Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenatis rutrum, ipsum neque consectetur orci, sed blandit justo nisi ac lacus.
+\end{block}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Multiple Columns}
+\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+\column{.45\textwidth} % Left column and width
+\textbf{Heading}
+\begin{enumerate}
+\item Statement
+\item Explanation
+\item Example
+\end{enumerate}
+
+\column{.5\textwidth} % Right column and width
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
+
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Table}
+\begin{table}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
+\midrule
+Treatment 1 & 0.0003262 & 0.562 \\
+Treatment 2 & 0.0015681 & 0.910 \\
+Treatment 3 & 0.0009271 & 0.296 \\
+\bottomrule
+\end{tabular}
+\caption{Table caption}
+\end{table}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Verbatim}
+\begin{example}[Theorem Slide Code]
+\begin{verbatim}
+\begin{frame}
+\frametitle{Theorem}
+\begin{theorem}[Mass--energy equivalence]
+$E = mc^2$
+\end{theorem}
+\end{frame}\end{verbatim}
+\end{example}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Figure}
+Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
+%\begin{figure}
+%\includegraphics[width=0.8\linewidth]{test}
+%\end{figure}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
+\frametitle{Citation}
+An example of the \verb|\cite| command to cite within the presentation:\\~
+
+This statement requires citation \cite{p1}.
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{References}
+\footnotesize{
+\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
+\bibitem[Smith, 2012]{p1} John Smith (2012)
+\newblock Title of the publication
+\newblock \emph{Journal Name} 12(3), 45 -- 678.
+\end{thebibliography}
+}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+\Huge{\centerline{The End}}
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+
+\end{document} 

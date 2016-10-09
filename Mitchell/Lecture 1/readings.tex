@@ -61,18 +61,18 @@
    \begin{center}
    \framebox{
       \vbox{\vspace{2mm}
-    \hbox to 6.28in { {\bf 01: Pattern Recognition and Machine Learning
-	\hfill May 2016} }
+    \hbox to 6.28in { {\bf 01: Machine Learning
+	\hfill July 18th, 2016} }
        \vspace{4mm}
        \hbox to 6.28in { {\Large \hfill Lecture #1: #2  \hfill} }
        \vspace{2mm}
-       \hbox to 6.28in { {\it Author: #3 \hfill Scribes: #4} }
+       \hbox to 6.28in { {\it Lecturer: #3 \hfill Scribes: #4} }
       \vspace{2mm}}
    }
    \end{center}
    \markboth{Lecture #1: #2}{Lecture #1: #2}
 
-   {\bf Note}: {\it Reading notes for pattern recognition and machine learning.}
+   {\bf Note}: {\it Notes for machine learning course of Mitchell.}
 
    {\bf Disclaimer}: {\it These notes have not been subjected to the
    usual scrutiny reserved for formal publications.  They may be distributed
@@ -117,7 +117,7 @@
 \begin{document}
 %FILL IN THE RIGHT INFO.
 %\lecture{**LECTURE-NUMBER**}{**DATE**}{**LECTURER**}{**SCRIBE**}
-\lecture{1}{Sparse Kernel Machines}{Christopher M. Bishop}{scribe-name1,2,3}
+\lecture{1}{Decision Tree Learning \& Review of Probability}{Christopher M. Bishop}{Yan Yan}
 %\footnotetext{These notes are partially based on those of Nigel Mansell.}
 
 % **** YOUR NOTES GO HERE:
@@ -130,21 +130,246 @@
 %----------------------------------------------------------------------------------------
 %	INTRO
 %----------------------------------------------------------------------------------------
-In this chapter we shall look at kernel-based algorithms that have sparse solutions,
-so that predictions for new inputs depend only on the kernel function evaluated at a \textbf{subset} 
-of the training data point.
-
-First the detail of SVM, in which the determination of the model parameters corresponds to a convex optimization problem - so that any local solution is also a global optimum.
-
-SVM is a decision machine and so does not provide posterior probabilities. RVM proposed based on a Bayesian formulation and provides posterior probabilistic outputs - as well as having typical much sparser solutions than the SVM.
+This chapter is based on Lecture 1 and Lecture 2 of Mitchell class, the reading references are  \textit{Pattern Recognition and Machine Learning} of Bishop and \textit{Machine Learning} of Mitchell. Also the PPT file of Andrew Moore and \textit{The Discipline of Machine Learning} were also mentioned.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
+\section{The Discipline of Machine Learning} 
+\subsection{Defining Questions}
+THE filed of machine learning seeks to answer the question:
+"How can we build computer systems that automatically improve with experience, and what are the fundamental laws that govern all learning processes?"
 
-\section{Maximum Margin Classifiers} 
+Define: A machine learns with respects to a particular task T, performance metric P, and a type of experience E, if the system reliably improves its performance P at task T, following experience E.
 
-Two-class classification problem:
+Depending on how we specify T, P and E, the learning task might also be called by names such as data mining, autonomous discovery, etc.
+
+Computer Science: how can we build machines that solve problems, and which problems are inherently tractable/intractable?
+
+V.S.
+
+Statistics: what can we inferred from data plus a set of modelling assumptions, with what reliability?
+
+Computer Science has focused primarily on how to manually program computers, ML focused on how to get computer to program themselves from experience, whereas Statistics focus on the what conclusions can be inferred from data.
+
+A third field whose defining questions is closely related to ML is the study of human and animal learning in Psychology, Neuroscience, and related fields. Other field like biology, econonics to control theory also have a core interest in the question of how systems can automatically adapt or optimize to their environment. The mathematical models for adaptation inthese other fields are somewhat different from those commonly used in machine learning, suggesting significant potential for cross-fertilisation of models and theories.
+\subsection{State of ML}
+The real-world applications, such as those listed below.
+\begin{enumerate}
+\item \textit{Speech recognition}
+\item \textit{Computer vision} like hand written addresses.
+\item \textit{Bio-surveillance} like the RODS project.
+\item \textit{Robot control} helicopter flight and helicopter aerobatics. The recent Darpa-sponsored competition involving a robot driving autonomously for over 100 miles in the desert was won by a robot that used machine learning to refine its ability to detect distant objects.
+\item \textit{Accelerating empirical sciences}, many data-intensive sciences now make use of machine learning methods to aid in the scientific discovery process.
+\end{enumerate}
+\subsection{Place of Machine Learning within Computer Science}
+In particular, machine learning methods are already the best methods available for developing particular types of software, in applications like:
+
+\begin{enumerate}
+\item The application in too complex for people to manually design the algorithm - sensor based perception task. computer vision.
+\item The application requires that the software customise to its operational environment after it it fielded - speech recognition 
+\end{enumerate}
+
+By shifting the question from "how to program computers" to "how to allow them to program themselves", machine learning emphasise the design of self monitoring systems that self-diagnose and self-repair and on approaches that model their users, and the take advantage of the steady stream of data flowing through the program rather than simply processing it.
+
+ML will help reshape the field of Statistics, by bringing a computational perspective to the fore, and raising issues such as never-ending learning.
+
+Some current Research Questions:
+\begin{enumerate}
+\item \textit{Can unlabeled data be helpful for supervised learning?}
+\item \textit{How can we transfer what is learned for one task to improve learning in other related tasks?}
+\item \textit{What is the relationship between different learning algorithms, and which should be used when?}
+\item \textit{For learners that actively collect their own training data, what is the best strategy?}
+\item \textit{To what degree can we have both data privacy and the benefits of data mining?}
+\end{enumerate}
+
+The above research questions are already being energetically pursued by researchers in the field. It is also interesting to consider longer term research questions. Some additional research topics are some potential questions may significantly change the face of machine learning over the coming decades:
+\begin{enumerate}
+\item \textit{Can we build never-ending learners?} Learning in animals or human beings is an ongoing process in which the agent learns many different capabilities, often in a sequenced curriculum, and uses these different learned facts and capabilities in a highly synergistic fashion. - why not build machine learners that learn in this same cumulative way!
+\item \textit{Can machine learning theories and algorithms help explain human learning?} Reinforce learning.
+\item \textit{Can we design programming languages containing machine learning primitives?}
+\item \textit{Will computer perception merge with machine learning?}
+\end{enumerate}
+
+\subsection{Where to Learn More}
+Related Sources:
+\begin{enumerate}
+\item \textit{International Conference on Machine Learning.}
+\item \textit{Conference on Neural Information Processing Systems.}
+\item  \textit{Annual Conference on Learning Theory.}
+\item  \textit{Journal of Machine Learning Research(JMLR) - www.jmlr.org}
+\item  \textit{Machine Learning}
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+\section{Decision Tree Learning (Based on Bishop Chapter 14.4)} 
+By partitioning the input space into cuboid regions, whose edges are aligned with the axes, and then assigning a simple model to each region. The process of selecting a specific model, given a new input x, can be described by a sequential decision making process corresponding to the traversal of a binary tree. Here we focus on a particular tree-based framework called CART. Some other type of methods like ID3 and C4.5. 
+
+....
+
+In order to learn such a model from a training set, we have to determine {\color{red}{the structure of the tree}}, including which input variable is chosen at each node to form {\color{red}{the split criterion}} as well as {\color{red}{the valued of the threshold parameter $\theta_i$ for the split}}. We also have to determine the values of the predictive variable within each region.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+
+\section{Lecture 1 of Mitchell}
+
+\subsection{Concepts}
+Machine learning:
+	
+Study of algorithms that 
+\begin{enumerate}
+\item[*] improve their performance P
+\item[*] at some task T
+\item[*] with experience E
+\end{enumerate}
+well-defined learning task:<P, T, E>.
+
+\subsection{Learning to Predict Emergency C-Sections}
+(Sims et al. 2000) A database with 9714 patient records each with 215 features.
+
+Over training data: 26/41 = .63
+
+Over test data: 12/20 = .60
+
+- Data mining~ try to learn how to predict future~
+
+\subsection{Learning to detect objects in images}
+Example training images for each orientation.
+
+\subsection{Learning to classify text documents.}
+High dimensional data.
+-Brain Image data.
+
+\subsection{Machine learning - Practice}
+Mining databases;
+
+Speech Recognition; 
+
+Control learning;
+
+Object recognition;
+
+Text analysis.
+
+\subsection{Machine Learning - Theory}
+PAC Learning Theory, supervised concept learning.
+examples - $m$
+
+representation complexity - $H$
+
+error rate - $e$
+
+failure probability - $\delta$
+
+
+Other theories for Reinforcement skill learning,
+semi-supervised learning
+active student querying.
+
+also relating:
+
+\begin{itemize}
+\item of mistakes during learning
+\item learner's query strategy
+\item convergence rate
+\item asymptotic performance
+\item bias, variance
+\end{itemize}
+
+\subsection{Machine Learning in Computer Science}
+
+Machine Learning already the preferred approach to:
+\begin{enumerate}
+\item Speech recognition, Natural language processing
+\item Computer vision
+\item Medical outcomes analysis
+\item Robot control
+\end{enumerate}
+
+This ML niche is growing, why ?
+
+\subsection{Function Approximation and Decision Tree Learning}
+
+have some function to some x to some y, 
+
+Function approximation:
+
+Problem Setting:
+\begin{enumerate}
+\item set of possible instance $X$
+\item unknown target function $f:X -> Y$
+\item set of function hypotheses $h=\{h|h:X->Y\}$
+\end{enumerate}
+
+Input:
+- Traning examples$\{x^{(i)}\}$
+
+Output:
+Hypotheses $h\in H$ 
+
+
+\subsection{Decision Tree Learning}
+
+Problem Setting:
+
+-Set of possible instances $S$
+
+each instanc $x$ in $X$ is a feature vector
+
+-Unknown target function $f:X->Y$
+
+$Y$ is discrete valued
+
+- Set of function hypotheses ~
+
+\subsection{Decision Tree}
+Suppose $X=<X_1, ... X_n>$ where $X_i$ are boolean variables.
+
+Top-Down Induction of Decision Trees
+
+[ID3, C4.5, Quinlan]
+
+node = Root
+
+Main loop:
+\begin{enumerate}
+\item $A<-$ the "best" decision attribute for next node
+\item Assign $A$ as decision attribute for node
+\item For each value of $A$, create new descendant of $node$
+\item Sort training examples to leaf nodes
+\item If training examples perfectly classified, then STOP, Else iterate over new leaf nodes.
+\end{enumerate}
+
+\subsection{Entropy}
+
+Entropy $H(X)$ of a random variable $X$:
+
+
+$H(X)$ is the expected number of bits needed to encode a randomly drawn value of $X$ (under most efficient code)
+
+Why? Information theory:
+
+Sample Entropy
+
+Entropy measures the impurity of $S$.
+
+Conditional entropy $H(X|Y = v)$
+
+Information Gain is the mutual information between input attribute A and target variable Y. Information Gain is the expected reduction in entropy of target variable Y for data sample S, due to sorting on variable A.
+
+\subsection{Applet}
+
+\section{Review of Probability} 
+
+
+
+
+Two-class classification probl em:
 \begin{equation}
 y(x) = w^T \phi(x) + b
 \end{equation}
