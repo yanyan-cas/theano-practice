@@ -4,11 +4,11 @@
 \beamer@subsectionintoc {1}{2}{Geometry of least squares}{7}{0}{1}
 \beamer@subsectionintoc {1}{3}{Sequential learning}{8}{0}{1}
 \beamer@sectionintoc {2}{Bias-Variance Decomposition}{13}{0}{2}
-\beamer@sectionintoc {3}{Bayesian Linear Regression}{14}{0}{3}
-\beamer@subsectionintoc {3}{1}{Parameter distribution}{14}{0}{3}
-\beamer@subsectionintoc {3}{2}{Predictive distribution}{15}{0}{3}
-\beamer@subsectionintoc {3}{3}{Equivalent kernal}{16}{0}{3}
-\beamer@sectionintoc {4}{Bayesian Model Comparison}{17}{0}{4}
-\beamer@sectionintoc {5}{Evidence Approximation}{18}{0}{5}
-\beamer@subsectionintoc {5}{1}{Evaluation of Approximation Function}{18}{0}{5}
-\beamer@subsectionintoc {5}{2}{Maximizeing the evidence function}{19}{0}{5}
+\beamer@sectionintoc {3}{Bayesian Linear Regression}{22}{0}{3}
+\beamer@subsectionintoc {3}{1}{Parameter distribution}{22}{0}{3}
+\beamer@subsectionintoc {3}{2}{Predictive distribution}{23}{0}{3}
+\beamer@subsectionintoc {3}{3}{Equivalent kernal}{24}{0}{3}
+\beamer@sectionintoc {4}{Bayesian Model Comparison}{25}{0}{4}
+\beamer@sectionintoc {5}{Evidence Approximation}{26}{0}{5}
+\beamer@subsectionintoc {5}{1}{Evaluation of Approximation Function}{26}{0}{5}
+\beamer@subsectionintoc {5}{2}{Maximizeing the evidence function}{27}{0}{5}

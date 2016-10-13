@@ -154,7 +154,7 @@ or
 \begin{figure}
 \includegraphics[width=12cm]{Figure1}
 \caption{Examples of basis functions.}
-\label{Figure1}
+%\label{Figure1}
 \end{figure}
 \end{frame}
 
@@ -218,7 +218,7 @@ Here $\bm{\Phi}$ is an $N \times M$ matrix (the \textit{design matrix}):
 \begin{figure}
 \includegraphics[width=5cm]{Figure2}
 \caption{Examples of basis functions.}
-\label{Figure2}
+%\label{Figure2}
 \end{figure}
 
 In an N-dimensional space whose axes are the value of $t_1,\cdots,t_N$. The least-squares regression function is obtained by finding the orthogonal projection of the data vector $\bm{t}$ onto the subspace spanned by the basis functions.
@@ -279,7 +279,7 @@ Consider the sum-of-squares error function with regularizer (quadratic regulariz
 \begin{figure}
 \includegraphics[width=12cm]{Figure3}
 \caption{Contours of the regularization term for various values of the parameter q.}
-\label{Figure3}
+%\label{Figure3}
 \end{figure}
 
 A more general regularizer is 
@@ -300,7 +300,7 @@ when q=2 corresponds to the quadratic regularizer in (12).\\~\\
 \includegraphics[width=7cm]{Figure4}
 \column{.3\linewidth}
 \caption{The  error function without regularization and the constraint region for quadratic regularizer (left) and lasso regularizer (right). We can see the $w$ in lasso equals to 0 make a sparse solution.}
-\label{Figure4}
+%\label{Figure4}
 \end{columns}
 \end{figure}
 
@@ -335,10 +335,165 @@ and maximize this function with respect to $\bm{W}$.
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{Test}
+\frametitle{Bias-Variance trade-off}
+The phenomenon of overfitting is an unfortunate property of maximum likelihood. Consider the Bayesian view of model complexity in depth. We consider a frequentist viewpoint of the model complexity issue, known as the bias-variance trade-off. \\~\\
 
+
+Various loss functions leads to different  corresponding optimal prediction, once we are given the conditional distribution $p(t|x)$. A popular choice is  the square loss function, for which the optimal prediction is given by the conditional expectation -- we denote by $h(x)$ and is given by:
+\begin{equation}
+h(\bm{x})=\mathbb{E}(t|\bm{x})=\int tp(t|\bm{x})dt
+\end{equation}
 
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Loss Function for Regression - Chap 1.5.5}
+The decision stage consists of choosing a $y(\bm{x})$ of the value of $t$ for each input $\bm{x}$. Suppose we incur a loss $L(t,y(\bm{x}))$, the average or expected loss is given by:
+\begin{equation}
+\mathbb{E}[L]=\int \int L(t,y(\bm{x}))p(\bm{x},t)d\bm{x}dt
+\end{equation}
+
+Our goal is to choose $y(\bm{x})$ so as to minimize $\mathbb{E}[L]$, assume a flexible function $y(\bm{x})$, do this using the calculus of variations to give:
+
+\begin{equation}
+\frac{\partial \mathbb{E}[L]}{\partial y(\bm{x})} = 2 \int \{y(\bm{x})-t\}p(\bm{x},t)=0
+\end{equation}
+
+Solving for $y(\bm{x})$ and using the sum and product rules of probability, we obtain:
+\begin{equation}
+y(\bm{x})=\frac{\int tp(\bm{x},t)dt}{p(\bm{x})}=\int tp(t|\bm{x})dt=\mathbb{E}_t[t|\bm{x}]
+\end{equation}
+which is the conditional average of t conditioned on x and is known as the regression function.
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Loss Function for Regression - Chap 1.5.5}
+\begin{figure}
+\begin{columns}
+\column{.6\linewidth}
+\includegraphics[width=7cm]{Figure5}
+\column{.3\linewidth}
+\caption{The regression function $y(x)$, which minimizes the expected squared loss, is given by the mean of the conditional distribution $p(t|x)$}
+%\label{Figure5}
+\end{columns}
+\end{figure}
+
+- It is easy to be extented into multiple target variables represented by the vector $\bm{t}$, in which case the optimal solution is the conditional average $y(\bm{x})=\mathbb{E}[\bm{t}|\bm{x}]$.
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Loss Function for Regression - Chap 1.5.5}
+We can expand the square term as :
+
+\begin{equation}
+\{y(\bm{x})-t\}^2=\{y(\bm{x}-\mathbb{E}[t|\bm{x}]+\mathbb{E}[t|\bm{x}])-t\}^2
+\end{equation}\\~\\
+
+We use $\mathbb{E}[t|\bm{x}]$ to denote $\mathbb{E}_t[t|\bm{x}]$, and then performing the integral over t, the cross-term in (21) will vanish and then we have:
+
+\begin{equation}
+E[L]=\int \{y(\bm{x})-t\}^2p(\bm{x})d\bm{x}+\int var[t|\bm{x}]p(\bm{x})d\bm{x}
+\end{equation}\\~\\
+
+The function we seek to determine enters only in the first term, whch will be minimized when $y(\bm{x})$ is equal to $\mathbb{E}[t|\bm{x}]$, in which case this term will vanish. This is simply the result that we derived previously and that show that the optimal least squares predictor is given by the conditional mean. The second term is the variance of the distribution of t, averaged over $\bm{x}$.
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Expected squared loss}
+So we can write the expected squared loss:
+\begin{equation}
+E[L]=\int \{y(\bm{x})-h(\bm{x})\}^2p(\bm{x})d\bm{x}+\int \int \{h(\bm{x}-t)^2\}p(\bm{x})d\bm{x}
+\end{equation}\\~\\
+
+The second term is independent of $y(\bm{x})$, arises from the intrinsic noise on the data and reprents the minimum achievable value of the expected loss.
+
+For the first term, the smallest value is zero. If we had an unlimited supply of data, we might find the regression function $h(\bm{x})$ to any desired degree of accuracy, which represents the optimal choice for $y(\bm{x})$.\\~\\
+
+However, in practice we have limited dataset of $\mathcal{D}$ containing $N$ data points, and consequently we do not know the regression function $h(\bm{x})$ exactly.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Algorithm Assessment}
+If we want to model the $h(\bm{x})$ using a parametric function $y(\bm{x},\bm{w})$ governed by vector $\bm{w}$, then from a Bayesian perspective the uncertainty in our model is expressed through a posterior distribution over $\bm{w}$.\\~\\
+
+From the frequentist treatment, involves making a point estimate of $\bm{w}$ based on the data set $\mathcal{D}$, and tries instead to interpret the uncertainty of this estimate through the thought experiment:
+\begin{enumerate}
+\item suppose we had a large data sets with size N, and each draw independently from $p(t,\bm{x})$.
+\item for the given dataset $\mathcal{D}$, we use learning algorithm obtain a prediction function $y(\bm{x};\mathcal{D})$.
+\item different dataset, we have different prediction function.
+\item then we have different values of squared loss.
+\item the particular algorithm is then assessed by the average over the ensemble of datasets.
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Bias-Variance in Expectation }
+ Consider the integrand of the first term of $\mathbb{E}[L]$, for a particular data set $\mathcal{D}$ takes the form
+ \begin{equation}
+ \{y(\bm{x};\mathcal{D}-h(\bm{x}))\}^2
+ \end{equation}
+ we take its average over the ensemble of data sets. Because this quantity will be dependent on the particular data set $\mathcal{D}$.\\~\\
+ 
+ We now take the expectation of this expression with respect to $\mathcal{D}$ and note that the final term will vanish , giving:
+ \begin{equation}
+ \begin{split}
+ \mathbb{E}_{\mathbb{D}}[\{y(\bm{x};\mathcal{D})-h(\bm{x})\}]
+ =\underbrace{\{\mathbb{E}_{\mathcal{D}}[y(\bm{x};\mathcal{D})]-h(\bm{x})\}^2}_{(bias)^2}+ \\\underbrace{\mathbb{E}_{\mathcal{D}}[\{y(\bm{x};\mathcal{D})-\mathbb{E}_{\mathcal{D}}[y(\bm{x};\mathcal{D})]\}^2]}_{variance}
+ \end{split}
+ \end{equation}
+ 
+ We see that the expected squared difference between $y(\bm{x},\mathcal{D})$ and the regression function $h(\bm{x})$ can be expressed as the sum of two terms.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bias-Variance in Expectation }
+
+ \begin{columns}[T]
+\begin{column}{.47\textwidth}
+\begin{block}{Various data points.}
+% Your image included here
+\includegraphics[width=\textwidth]{Figure6}
+
+\end{block}
+\end{column}
+
+
+\begin{column}{.47\textwidth}
+\begin{block}{Comparisons}
+\includegraphics[width=\textwidth]{Figure7}
+
+Illustration of the dependence of bias and variance on model complexity governed by a regularization parameter $\lambda$ and the results for $(bias)^2+variance$.
+
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bias-Variance in Expectation }
+From the comparisons curve we can check the variations for different $\lambda$. When $\lambda$ is large (in the top row of last page left graph), we can see the red curves plot look similar in left column-- low variance,  but in the right column two curves are quite different -- high bias.\\~\\
+
+In the bottom row which is quite different which $\lambda$ is small and we have large variance --  shown by the high variability between the red curves in the left plot, and low bias shown by the good fit to the regression function.\\~\\
+
+Note that the result of averaging many solutions for the complex model with $M=25$ is a very good fit to the regression function.\\~\\
+
+Indeed, a weighted averaging of multiple solutions lies at the heart of a Bayesian approach, with respect to the posterior distribution of parameters (not with respect to multiple data sets).
+\end{frame}
+
 
 
 %------------------------------------------------
